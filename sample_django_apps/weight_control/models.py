@@ -11,7 +11,7 @@ class Pacient_Profile(models.Model):
     first_name = models.CharField(max_length=50)
     second_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=15)
-    adress = models.CharField(max_length=100,unique=False)
+    adress = models.CharField(max_length=100,unique=False, default="Адрес не указан")
     birth_date = models.DateField(null=True, blank=True)
     first_diagnos = models.TextField(unique=False)
     start_weight = models.DecimalField(max_digits=6, decimal_places=3,)
@@ -44,9 +44,12 @@ class Doctor_Profile(models.Model):
     email = models.CharField(max_length=50, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     doc_stage = models.IntegerField()
+    self_description = models.TextField(unique=False, default="Ничего не известно")
     doc_specialty = models.ManyToManyField(Specialty_List)
     registration_date = models.DateField(null=False, blank=True, default=date.today)
+    adress = models.CharField(max_length=100, unique=False, default="Адрес не указан")
     foto_file_path = models.CharField(max_length=120, unique=False, blank=True)
+    gender = models.CharField(choices=CHOICE_GENDER, max_length=2, blank=False, default=1)
 
     def calculate_age(self, birth_date):
         if not birth_date:
@@ -88,7 +91,7 @@ class Assignment(models.Model):
     user_profile = models.OneToOneField(Pacient_Profile, on_delete=models.PROTECT)
     doctor_profile = models.OneToOneField(Doctor_Profile, on_delete=models.PROTECT)
     diets = models.ForeignKey(Diets_List, on_delete=models.PROTECT)
-    preparats_list = models.ManyToManyField(Preparats_List, unique=False, null=True )
+    preparats_list = models.ManyToManyField(Preparats_List, unique=False)
     description = models.TextField(unique=False)
 
 class Symptoms_list(models.Model):

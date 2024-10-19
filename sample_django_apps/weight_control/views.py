@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse_lazy
-from .models import Pacient_Profile, Doctor_Profile, Pacient_reports,Assignment, Preparats_List, Specialty_List
+from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Assignment, Preparats_List, Specialty_List
 
 
 from .config import MENU, MAIN_TITLE, MENU_DASHBOARD, MENU_ENTRANCE, MENU_REGISTRATION
@@ -75,7 +75,7 @@ class My_View(TemplateView):
     def get_user_groups(self):
         if not self.request.user.groups.values():
             return []  # пользователь вне групп
-        return [x['name'] for x in self.request.user.groups.values('name')]  # возвращвем списки имен групп
+        return [x['name'] for x in self.request.user.groups.values('name')]  # возвращвем списки имен групп пользователя
 
     def auth_as_pacient(self):
         if self.user_is_auth() and len(self.get_user_groups()) == 0:
@@ -83,8 +83,11 @@ class My_View(TemplateView):
         return False
 
     def auth_as_doctor(self):
-        if self.user_is_auth() and 'доктор' in self.get_user_groups():
+        if self.user_is_auth() and 'врач' in self.get_user_groups():
+            print('--- это доктор')
             return True
+        print('--- это не доктор')
+        print([x['name'] for x in self.request.user.groups.values('name')])
         return False
 
     def get_profile(self, ):
@@ -102,6 +105,7 @@ class My_View(TemplateView):
     def get_profile_form(self, requestion=None):
         if self.auth_as_doctor():
             form = Doctor_profile_Form(requestion, instance=self.get_profile())
+            return form
         elif self.auth_as_pacient():
             form = Pacient_Profile_Form(requestion, instance=self.get_profile())
             return form
@@ -138,6 +142,7 @@ class Profile_Edit(My_View):
             doctor = doctor_form.save(commit=False)
             doctor.user = self.get_user()
             doctor.save()
+            doctor_form.save_m2m()
             return redirect('/weight_control/') # док профиль поправил успешно
         return redirect('/weight_control/') # если не зашел - регистрируйся
 

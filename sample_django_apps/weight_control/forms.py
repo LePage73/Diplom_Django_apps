@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment
+from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment, Specialty_List
 from .config import CHOICE_GENDER
 
 class Pacient_Profile_Form(ModelForm):
@@ -48,9 +48,12 @@ class User_logon_Form(AuthenticationForm):
                    }
 
 class Doctor_profile_Form(ModelForm):
+    DOC_SPEC = [(x.id, x.title) for x in Specialty_List.objects.all()]
+    doc_specialty = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=DOC_SPEC)
     class Meta:
         model = Doctor_Profile
-        fields = '__all__'
+        exclude = ['user']
+        # fields = '__all__'
         widgets = {'family': forms.TextInput(attrs={'placeholder': 'Фамилия', 'autofocus': 'true'}),
                    'first_name': forms.TextInput(attrs={'placeholder': 'Имя', }),
                    'second_name': forms.TextInput(attrs={'placeholder': 'Отчество', }),
@@ -58,6 +61,10 @@ class Doctor_profile_Form(ModelForm):
                    'adress': forms.Textarea(attrs={'cols': '100%', 'rows': 2,
                                                    'placeholder': 'Адрес: \nМосква, 3-я улица Строителей, д.5, кв. 12', }),
                    'birth_date': NumberInput(attrs={'type': 'date', }),
+                   'self_description': forms.Textarea(attrs={'cols': '100%', 'rows': 3,
+                                                   'placeholder': 'Расскажите о себе нашим пациентам', }),
+                   'gender': forms.RadioSelect(attrs={}, ),
+                   'email': forms.TextInput(attrs={'placeholder': 'vash_email@domen.ru', })
                    }
 
 
@@ -66,8 +73,8 @@ class Dashboard_Form(forms.Form):
     pass
 
 class Pacient_Report_Form(ModelForm):
-    OPTION = [(x.id, x.title) for x in Symptoms_list.objects.all()]
-    symptoms_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=OPTION)
+    SYMPTOM_LIST = [(x.id, x.title) for x in Symptoms_list.objects.all()]
+    symptoms_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=SYMPTOM_LIST)
 
     class Meta:
         model = Pacient_reports

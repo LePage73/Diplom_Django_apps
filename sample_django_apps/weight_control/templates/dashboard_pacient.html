@@ -88,7 +88,12 @@
                                   </div>
 
                                   <div class="modal-footer">
-                                     <h6 class="btn">Врач: &nbsp; {{ assign.doctor.family }}&nbsp;{{ assign.doctor.first_name|slice:'0:1' }}.{{ assign.doctor.second_name|slice:'0:1' }}.</h6>
+                                      <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ assign.doctor.family }}
+                                               &nbsp;{{ assign.doctor.first_name|slice:'0:1' }}.
+                                               {{ assign.doctor.second_name|slice:'0:1' }}."
+                                               data-bs-content="{{assign.doctor.self_description}} Врачебный стаж: {{assign.doctor.doc_stage}} лет.">
+                                               Врач: &nbsp; {{ assign.doctor.family }}&nbsp;{{ assign.doctor.first_name|slice:'0:1' }}.{{ assign.doctor.second_name|slice:'0:1' }}.
+                                      </button>
                                       {% for specialty in assign.doc_specialty %}
                                       <button class="btn btn-secondary" data-bs-toggle="popover" title="{{specialty.title}}" data-bs-content="{{specialty.description}}">
                                       {{specialty.title}}

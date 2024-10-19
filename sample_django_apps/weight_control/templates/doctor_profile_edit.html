@@ -1,0 +1,72 @@
+{% extends "main_menu.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+{{ block.super }}
+{% endblock %}
+<body>
+{% block header %}
+{{ block.super }}
+{% endblock %}
+<h2>
+{% block menu %}
+{{ block.super }}
+{% endblock %}
+</h2>
+{% block content %}
+<div class="container mt-3 justify-content-center main-container">
+
+         <div class="card justify-content-center">
+             <div class="card-body" style="backgroundcolor:silver">
+                <h2>Профиль доктора</h2>
+                <form method="post">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <div class="container secondary-container">
+                            <div class="row">
+                                <div><hr></div>
+                                <div class="col col-md-4">
+                                    <div class="card">
+                                        {{ form_doctor.family }}
+                                        {{ form_doctor.first_name }}
+                                        {{ form_doctor.second_name }}
+                                        {{ form_doctor.gender }}
+                                        {{ form_doctor.phone_number }}
+                                        {{ form_doctor.email }}
+                                        {{ form_doctor.doc_stage}}
+                                        {{ form_doctor.birth_date }}
+                                        <hr>
+                                        <button type="submit" class="btn-primary">Сохранить</button><hr>
+                                        <a href="/weight_control/dashboard/" class="btn justify-center">Отмена</a>
+                                    </div>
+                                </div>
+                                <div class="col col-md-8">
+                                    <div class="card">
+                                        {{ form_doctor.adress }}
+                                        {{ form_doctor.self_description }}
+                                        <h6>Отметьте свою специализацию</h6><hr>
+                                        {% for specialty in form_doctor.doc_specialty %}
+                                            {{ specialty }}
+                                        {% endfor %}
+                                        <hr>
+                                        {% for field in form_doctor %}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                            <p class="comment-alarm">{{field.label}}&nbsp;-&nbsp;{{ error }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+             </div>
+         </div>
+</div>
+{% endblock %}
+
+</body>
+</html>

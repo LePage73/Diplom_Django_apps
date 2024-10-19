@@ -1,0 +1,54 @@
+{% extends "main_menu.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+{{ block.super }}
+{% endblock %}
+<body>
+{% block header %}
+{{ block.super }}
+{% endblock %}
+<h2>
+{% block menu %}
+{{ block.super }}
+{% endblock %}
+</h2>
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-3">
+            <form method="post">
+            {% csrf_token %}
+            <div class="card">
+
+                <!--{{form.username}}
+                {{form.password}}-->
+                <div class="comment-alarm">{{ form.non_field_errors }}</div>
+                {% for field in form %}
+                <p><label class="form-label" for="{{ field.id_for_label }}">{{field.label}}: </label>{{ field }}</p>
+                <div class="form-error">{{ field.errors }}</div>
+                {% endfor %}
+
+                <button type="submit" class="btn-primary">Войти</button>
+                <div class="comment">Войдите &nbsp;или&nbsp;<a href="/weight_control/registration/">зарегистрируйтесь</a></div>
+
+                <!-- {% for field in form %}
+                    {% if field.errors%}
+                        {% for error in field.errors %}
+                        <div class="comment-alarm">{{error}}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}-->
+            </div>
+
+            </form>
+        <div class="col-md-4"></div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+</body>
+</html>

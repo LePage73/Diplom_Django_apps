@@ -1,0 +1,91 @@
+{% extends "main_menu.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+{{ block.super }}
+{% endblock %}
+<body>
+{% block header %}
+{{ block.super }}
+{% endblock %}
+<h2>
+{% block menu %}
+{{ block.super }}
+{% endblock %}
+</h2>
+{% block content %}
+<div class="container mt-3 justify-content-center main-container">
+
+         <div class="card justify-content-center">
+             <div class="card-body" style="backgroundcolor:silver">
+                <h2>Регистрация</h2>
+                <form method="post">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <div class="container secondary-container">
+                            <div class="row">
+                                <div><hr></div>
+                                <div class="col col-md-4">
+                                    <div class="card">
+                                        {{ form_pacient.family }}
+                                        {{ form_pacient.first_name }}
+                                        {{ form_pacient.second_name }}
+                                        {{ form_pacient.gender }}
+                                        {{ form_pacient.phone_number }}
+                                        {{ form_pacient.email }}
+                                        {{ form_pacient.birth_date }}
+                                        {{ form_pacient.start_weight }}
+                                    </div>
+                                </div>
+                                <div class="col col-md-8">
+                                    <div class="card">
+                                        {{ form_pacient.adress }}
+                                        {{ form_pacient.first_diagnos }}
+                                        {% for field in form_pacient %}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                            <p class="comment-alarm">{{field.label}}&nbsp;-&nbsp;{{ error }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-12"><hr></div>
+                        </div>
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            {{ form_user.username }}
+                                            <p class="comment">Придумайте пароль</p>
+                                            {{ form_user.password1 }}
+                                            <p class="comment">Повторите пароль</p>
+                                            {{ form_user.password2 }}
+                                            <hr>
+                                            <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {% for field in form_user %}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                        <p class="comment-alarm">{{field.label}}&nbsp;-&nbsp;{{ error }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                    </div>
+                </form>
+             </div>
+         </div>
+</div>
+{% endblock %}
+</body>
+</html>

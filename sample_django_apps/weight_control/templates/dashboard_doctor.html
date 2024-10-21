@@ -1,0 +1,159 @@
+{% extends "main_menu.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+{{ block.super }}
+{% endblock %}
+<body>
+{% block header %}
+{{ block.super }}
+{% endblock %}
+<h2>
+{% block menu %}
+{{ block.super }}
+{% endblock %}
+</h2>
+{% block content %}
+<div class="container mt-3 justify-content-center doc-container">
+    <div class="card justify-content-center">
+         <div class="card-body" >
+            <div class="row">
+                <!-- первый столбец -->
+                <div class="col-md-3">
+                    <div class="card">
+                    <div class="card-header"><h5>Ожидают</h5></div>
+                    <div class="card-body">
+                    {% for pacient in pacient_list%}
+                       <a href="?pacient_id={{ pacient.id }}" class="btn {{ pacient.class }} ">{{ pacient.pacient }}</a>
+                    {% endfor %}
+                    </div>
+                    </div>
+                </div>
+                <!-- -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><h5>Прием пациента</h5></div>
+                            <div class="card-body">
+                                <p class="text-small"><b>Пациент</b>:&nbsp;{{pacient.family}}&nbsp;{{pacient.first_name}}&nbsp;{{pacient.second_name}},&nbsp;
+                                <b>зарегистрирован:</b>&nbsp;{{pacient.registration_date}},&nbsp;
+                                {{pacient.gender}}
+                                <b>, вес при поступлении:</b>&nbsp;{{pacient.start_weight }} кг.<br>
+                                <b>Диагноз:</b>&nbsp;{{pacient.first_diagnos}}&nbsp;
+                                </p>
+                            </div>
+                    </div>
+                    <!-- блок динамики изменения -->
+                     <div class="card">
+                        <div class="card-header"><h5>Динамика лечения</h5></div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="/static/media/graph_weight_1.png" width="100%">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="/static/media/graph_weight_1.png" width="100%">
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+
+                    <!-- Новое назначение -->
+                    <div class="card">
+                        <div class="card-header"><h5>Новое назначение</h5></div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                {{assign_form.diets}}
+                                {{assign_form.preparats_list}}
+                                {{assign_form.description}}
+                                <button type="submit" class="btn-primary">Назначить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header"><h5>Назначения</h5></div>
+                            <!-- начало построения списка назначений -->
+                                {% for assign in pacient_assign %}
+
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ assign.id }}">
+                                      Назначение от&nbsp;{{ assign.assign_date|date:"SHORT_DATE_FORMAT" }}
+                                    </button>
+                                <!-- Модальное окно кнопка-->
+
+                                <div class="modal " id="exampleModal{{ assign.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ assign.id }}" aria-hidden="true">
+
+                                  <!-- Модальное окно -->
+                                  <div class="modal-dialog  modal-dialog-centered">
+                                    <div class="modal-content">
+
+                                          <div class="modal-header">
+
+                                            <h5 class="modal-title" id="exampleModalLabel{{ assign.id }}">Назначение от&nbsp;{{ assign.assign_date|date:"SHORT_DATE_FORMAT" }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                          </div>
+
+                                          <div class="modal-body">
+
+                                                <p>Рекомендация:</p><p>{{ assign.description }}</p><hr>
+                                                <p>Диета:</p>
+                                                    <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ assign.diets.title }}" data-bs-content="{{ assign.diets.description }}">
+                                                    {{ assign.diets.title }}
+                                                    </button>
+                                                    <hr>
+                                                <p>Препараты:</p>
+                                                    {% for preparat in assign.preparats_list.all %}
+                                                        <p>
+                                                            <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ preparat.title }}" data-bs-content="{{ preparat.description }}">
+                                                            {{ preparat.title }}
+                                                            </button>
+                                                        </p>
+                                                    {% endfor %}
+                                                <hr>
+                                          </div>
+
+                                          <div class="modal-footer">
+                                              <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ assign.doctor_profile.family }}
+                                                       &nbsp;{{ assign.doctor_profile.first_name|slice:'0:1' }}.
+                                                       {{ assign.doctor_profile.second_name|slice:'0:1' }}."
+                                                       data-bs-content="{{assign.doctor_profile.self_description}} Врачебный стаж: {{assign.doctor_profile.doc_stage}} лет.">
+                                                       Врач: &nbsp; {{ assign.doctor_profile.family }}&nbsp;{{ assign.doctor_profile.first_name|slice:'0:1' }}.{{ assign.doctor_profile.second_name|slice:'0:1' }}.
+                                              </button>
+                                              {% for specialty in assign.doctor_profile.doc_specialty.all %}
+                                                  <button class="btn btn-secondary" data-bs-toggle="popover" title="{{specialty.title}}" data-bs-content="{{specialty.description}}">
+                                                  {{specialty.title}}
+                                                  </button>
+                                              {% endfor %}
+                                          </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- Модальное окно конец-->
+                                {% endfor %}
+                            <!-- Конец построения списка назначений -->
+
+                    </div>
+
+                </div>
+
+            </div>
+         <!-- Конец карточки -->
+         </div>
+    </div>
+
+</div>
+
+<!-- разрешаем поповеры -->
+<script>
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)})
+</script>
+
+{% endblock %}
+
+</body>
+</html>

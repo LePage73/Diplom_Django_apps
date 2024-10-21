@@ -9,11 +9,33 @@ from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse_lazy
 from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Assignment, Preparats_List, Specialty_List
-
-
 from .config import MENU, MAIN_TITLE, MENU_DASHBOARD, MENU_ENTRANCE, MENU_REGISTRATION
+import numpy as np
+import matplotlib.pyplot as plt
+
+# построение графиков
+
+# график изменения веса
+
+def plot_weight_graph():
+    x = range(1,10,1)
+    y = range(1,10,1)
+    plt.figure(figsize=(6,4))
+    plt.grid()
+    plt.ioff()
+    plt.plot(x,y)
+    plt.savefig('./static/media/graph_weight_1.png', transparent=True)
+
+
+def plot_symptoms_graph():
+    pass
+
+
+
+
 
 # Create your views here.
+
 
 
 def registration(request):
@@ -39,15 +61,18 @@ def registration(request):
                   {'form_user': form_user}
                   | {'form_pacient': form_pacient}
                   | MENU_REGISTRATION
-                  | MAIN_TITLE )
+                  | MAIN_TITLE)
+
 
 def home_page(request):
     return render(request, 'home_page.html', MENU | MAIN_TITLE)
+
 
 def user_logout(request):
     logout(request)
     return redirect('/weight_control/')
     # return render(request,'home_page.html', MENU | MAIN_TITLE)
+
 
 class User_logon(LoginView):
     form_class = AuthenticationForm
@@ -56,6 +81,14 @@ class User_logon(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('home_page')
+
+def calculate_age(birth_date):
+    if not birth_date:
+        return 'не указан'
+    else:
+        today = datetime.date.today()
+        return str(today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))) + ' лет'
+
 
 # расширим класс TemplateView - научим различать пользователей
 
@@ -84,10 +117,7 @@ class My_View(TemplateView):
 
     def auth_as_doctor(self):
         if self.user_is_auth() and 'врач' in self.get_user_groups():
-            print('--- это доктор')
             return True
-        print('--- это не доктор')
-        print([x['name'] for x in self.request.user.groups.values('name')])
         return False
 
     def get_profile(self, ):
@@ -97,11 +127,12 @@ class My_View(TemplateView):
             else:
                 return None
         elif self.auth_as_pacient():
-                if Pacient_Profile.objects.filter(user__username=self.request.user).exists():
-                    return Pacient_Profile.objects.get(user__username=self.request.user)
-                else:
-                    return None
+            if Pacient_Profile.objects.filter(user__username=self.request.user).exists():
+                return Pacient_Profile.objects.get(user__username=self.request.user)
+            else:
+                return None
         return None
+
     def get_profile_form(self, requestion=None):
         if self.auth_as_doctor():
             form = Doctor_profile_Form(requestion, instance=self.get_profile())
@@ -126,14 +157,14 @@ class Profile_Edit(My_View):
 
     def post(self, request):
         if self.auth_as_pacient():
-            pacient_form = self.get_profile_form(requestion=request.POST) # при instace=None записывает новый
+            pacient_form = self.get_profile_form(requestion=request.POST)  # при instace=None записывает новый
             if not pacient_form.is_valid():
                 self.my_context['form_pacient'] = pacient_form
                 return render(self.request, 'user_profile_edit.html', self.my_context | MENU_DASHBOARD | MAIN_TITLE)
             pacient = pacient_form.save(commit=False)
             pacient.user = self.get_user()
             pacient.save()
-            return redirect('/weight_control/') # пациент профиль поправил успешно
+            return redirect('/weight_control/')  # пациент профиль поправил успешно
         elif self.auth_as_doctor():
             doctor_form = self.get_profile_form(requestion=request.POST)
             if not doctor_form.is_valid():
@@ -143,8 +174,8 @@ class Profile_Edit(My_View):
             doctor.user = self.get_user()
             doctor.save()
             doctor_form.save_m2m()
-            return redirect('/weight_control/') # док профиль поправил успешно
-        return redirect('/weight_control/') # если не зашел - регистрируйся
+            return redirect('/weight_control/')  # док профиль поправил успешно
+        return redirect('/weight_control/')  # если не зашел - регистрируйся
 
 
 class Dashboard(My_View):
@@ -152,7 +183,7 @@ class Dashboard(My_View):
         context = {}
         pacient_report_form = Pacient_Report_Form()
         context['form'] = pacient_report_form
-        assign_ext = Assignment.objects.prefetch_related('preparats_list').filter(user_profile=self.get_profile())
+        assign_ext = Assignment.objects.prefetch_related('preparats_list').filter(pacient_profile=self.get_profile())
         doc_prof_ext = Doctor_Profile.objects.prefetch_related('doc_specialty').all()
         context['assignments'] = [{'doctor': x.doctor_profile,
                                    'doc_specialty': [{'title': y.title, 'description': y.description}
@@ -160,27 +191,82 @@ class Dashboard(My_View):
                                                      for y in z.doc_specialty.all()],
                                    'description': x.description,
                                    'date': x.assign_date,
+                                   'id': x.id,
                                    'diet': x.diets,
                                    'preparats': [{'title': y.title, 'description': y.description}
                                                  for y in x.preparats_list.all()]}
                                   for x in assign_ext]
         return context
+
+    def set_doctor_context(self):
+        context = {}
+        pacient_id = self.request.GET.get('pacient_id')
+        if not pacient_id:
+            pacient_id = '0'
+        assign_form = Assignment_Form()
+        context['assign_form'] = assign_form
+        pacient_list = Pacient_Profile.objects.filter(doc_attached=self.get_profile())
+        context['pacient_list'] = [
+            {'pacient': x, 'class': 'btn-select', 'id': x.id}
+            if x.id == int(pacient_id)
+            else {'pacient': x, 'class': 'btn-primary', 'id': x.id}
+            for x in pacient_list]
+        if pacient_id !='0':
+            pacient_profile= Pacient_Profile.objects.get(id=int(pacient_id))
+            context['pacient'] = pacient_profile
+            context = context | {'age': calculate_age(pacient_profile.birth_date)}
+            pacient_assign = Assignment.objects.prefetch_related('preparats_list', 'doctor_profile').filter(pacient_profile_id = int(pacient_id))
+            context['pacient_assign'] = pacient_assign
+            print(context['pacient_assign'])
+            plot_weight_graph()
+            plot_symptoms_graph()
+        return context
+
     def get(self, request):
         if self.auth_as_pacient():
             self.my_context = self.my_context | self.set_pacient_context()
-            return render(self.request, 'dashboard_pacient.html', self.set_pacient_context() | MENU_DASHBOARD | MAIN_TITLE)
+            return render(self.request, 'dashboard_pacient.html',
+                          self.my_context | MENU_DASHBOARD | MAIN_TITLE)
+        elif self.auth_as_doctor():
+            self.my_context = self.my_context | self.set_doctor_context()
+            return render(self.request, 'dashboard_doctor.html',
+                          self.my_context | MENU_DASHBOARD | MAIN_TITLE)
         return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
 
     def post(self, request):
-        pacient_report_form = Pacient_Report_Form(request.POST)
-        if pacient_report_form.is_valid():
-            report = pacient_report_form.save(commit=False)                                     #####
-            report.pacient_profile = self.get_user_profile()                                    #####
-            report.save()                                                                       #####
-            pacient_report_form.save_m2m()                                                      #####
-            return redirect('/weight_control/')
-        self.my_context['form'] = pacient_report_form
-        return render(self.request, 'home_page.html',self.my_context | MENU | MAIN_TITLE)
-
+        if self.auth_as_pacient():
+            pacient_report_form = Pacient_Report_Form(request.POST)
+            if pacient_report_form.is_valid():
+                report = pacient_report_form.save(commit=False)  #####
+                report.pacient_profile = self.get_user_profile()  #####
+                report.save()  #####
+                pacient_report_form.save_m2m()  #####
+                return redirect('/weight_control/')
+            self.my_context = self.set_pacient_context()
+            self.my_context['form'] = pacient_report_form
+            return render(self.request, 'dashboard_pacient.html', self.my_context | MENU | MAIN_TITLE)
+        elif self.auth_as_doctor():
+            pacient_id = self.request.GET.get('pacient_id')
+            assign_form = Assignment_Form(self.request.POST)
+            if assign_form.is_valid():
+                print('валидно')
+                assign = assign_form.save(commit=False)
+                assign.pacient_profile = Pacient_Profile.objects.get(id = int(pacient_id))
+                assign.doctor_profile = self.get_profile()
+                print(assign)
+                print(assign.pacient_profile.id)
+                print(assign.doctor_profile.id)
+                print(assign.diets)
+                print(assign.description)
+                assign.save()
+                assign_form.save_m2m()
+                return redirect('/weight_control/dashboard/')
+            self.my_context = self.set_doctor_context()
+            print('не валидно')
+            print(assign_form.errors)
+            self.my_context['assign_form'] = assign_form
+            return render(self.request, 'dashboard_doctor.html',
+                          self.my_context | MENU_DASHBOARD | MAIN_TITLE)
+        return redirect('/weight_control/')
 
 

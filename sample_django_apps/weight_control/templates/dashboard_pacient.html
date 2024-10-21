@@ -53,19 +53,19 @@
                         <div><h4>Назначения</h4></div>
                         <!-- начало построения списка назначений -->
                         {% for assign in assignments %}
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ assign.id }}">
                               Назначение от&nbsp;{{ assign.date|date:"SHORT_DATE_FORMAT" }}
                             </button>
                         <!-- Модальное окно кнопка-->
 
-                        <div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal " id="exampleModal{{ assign.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ assign.id }}" aria-hidden="true">
                         <!--<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
                           <!-- Модальное окно -->
                           <div class="modal-dialog  modal-dialog-centered">
                             <div class="modal-content">
 
                                   <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Назначение от&nbsp;{{ assign.date|date:"SHORT_DATE_FORMAT" }}</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel{{ assign.id }}">Назначение от&nbsp;{{ assign.date|date:"SHORT_DATE_FORMAT" }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                                   </div>
 

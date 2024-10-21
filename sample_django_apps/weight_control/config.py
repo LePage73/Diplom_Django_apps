@@ -25,6 +25,6 @@ MENU_REGISTRATION = {'menu': [{'menu': 'О нас', 'href': '/weight_control/', 
                  ]}
 
 CHOICE_GENDER = [
-    ('Mr', 'Мужчина'),
-    ('Ms', 'Женщина')
+    ('мужчина', 'Мужчина'),
+    ('женщина', 'Женщина')
 ]

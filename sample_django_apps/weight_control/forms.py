@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment, Specialty_List
+from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment, Specialty_List, Preparats_List
 from .config import CHOICE_GENDER
 
 class Pacient_Profile_Form(ModelForm):
@@ -84,9 +84,13 @@ class Pacient_Report_Form(ModelForm):
                    }
 
 class Assignment_Form(ModelForm):
-    # preparats_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
+    PREPARATS_LIST = [(x.id, x.title) for x in Preparats_List.objects.all()]
+    preparats_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=PREPARATS_LIST)
 
     class Meta:
         model = Assignment
-        exclude = ['assign_date']
+        exclude = ['assign_date', 'pacient_profile', 'doctor_profile']
         # fields = '__all__'
+        widgets = {'description': forms.Textarea(
+            attrs={'rows': 3, 'placeholder': 'Назначения пациенту', }),
+        }

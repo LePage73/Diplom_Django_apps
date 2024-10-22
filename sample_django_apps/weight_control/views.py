@@ -26,6 +26,7 @@ def plot_weight_graph(pacient_id):
     plt.figure(figsize=(6,4))
     plt.title('Динамика веса')
     plt.ylabel('Вес, кг')
+    plt.xlabel('Время')
     plt.grid()
     plt.ioff()
     plt.plot(x,y)

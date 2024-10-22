@@ -17,17 +17,22 @@ import matplotlib.pyplot as plt
 
 # график изменения веса
 
-def plot_weight_graph():
-    x = range(1,10,1)
-    y = range(1,10,1)
+def plot_weight_graph(pacient_id):
+    pacient_rep = Pacient_reports.objects.filter(pacient_profile_id=pacient_id).order_by('report_date')
+    x = [a.report_date for a in pacient_rep]
+    y = [a.weight_today for a in pacient_rep]
+    # print(' -- строим ')
+    # print(x,y)
     plt.figure(figsize=(6,4))
+    plt.title('Динамика веса')
+    plt.ylabel('Вес, кг')
     plt.grid()
     plt.ioff()
     plt.plot(x,y)
     plt.savefig('./static/media/graph_weight_1.png', transparent=True)
 
 
-def plot_symptoms_graph():
+def plot_symptoms_graph(pacient_d):
     pass
 
 
@@ -217,9 +222,8 @@ class Dashboard(My_View):
             context = context | {'age': calculate_age(pacient_profile.birth_date)}
             pacient_assign = Assignment.objects.prefetch_related('preparats_list', 'doctor_profile').filter(pacient_profile_id = int(pacient_id))
             context['pacient_assign'] = pacient_assign
-            print(context['pacient_assign'])
-            plot_weight_graph()
-            plot_symptoms_graph()
+            plot_weight_graph(int(pacient_id))
+            plot_symptoms_graph(int(pacient_id))
         return context
 
     def get(self, request):
@@ -238,7 +242,7 @@ class Dashboard(My_View):
             pacient_report_form = Pacient_Report_Form(request.POST)
             if pacient_report_form.is_valid():
                 report = pacient_report_form.save(commit=False)  #####
-                report.pacient_profile = self.get_user_profile()  #####
+                report.pacient_profile = self.get_profile()  #####
                 report.save()  #####
                 pacient_report_form.save_m2m()  #####
                 return redirect('/weight_control/')

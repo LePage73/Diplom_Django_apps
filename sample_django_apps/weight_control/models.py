@@ -68,12 +68,6 @@ class Pacient_Profile(models.Model):
         return self.family + ' ' + self.first_name + ' ' + self.second_name + ', ' + self.calculate_age(self.birth_date)
 
 
-
-
-
-
-
-
 class Diets_List(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(unique=False)

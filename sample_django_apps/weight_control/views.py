@@ -21,8 +21,6 @@ def plot_weight_graph(pacient_id):
     pacient_rep = Pacient_reports.objects.filter(pacient_profile_id=pacient_id).order_by('report_date')
     x = [a.report_date for a in pacient_rep]
     y = [a.weight_today for a in pacient_rep]
-    # print(' -- строим ')
-    # print(x,y)
     plt.figure(figsize=(6,4))
     plt.title('Динамика веса')
     plt.ylabel('Вес, кг')
@@ -34,6 +32,22 @@ def plot_weight_graph(pacient_id):
 
 
 def plot_symptoms_graph(pacient_d):
+    pacient_symp = Pacient_reports.objects.prefetch_related('symptoms_list').filter(pacient_profile_id=pacient_d)
+    symp = [ y.title for x in pacient_symp for y in x.symptoms_list.all()]
+    x = list(set(symp))
+    y = [symp.count(z) for z in x]
+    # print('-----------')
+    # print(symp)
+    # print(x)
+    # print(y)
+    plt.figure(figsize=(6,4))
+    plt.title('Наблюдаемые симптомы')
+    plt.ylabel('Частота появления')
+    plt.xlabel('Симптом')
+    plt.grid()
+    plt.ioff()
+    plt.bar(x,y)
+    plt.savefig('./static/media/graph_symptom_1.png', transparent=True)
     pass
 
 

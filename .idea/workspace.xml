@@ -4,21 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1980040c-fa0f-4ef5-8985-9679e98fa7c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Diplom_Django_apps.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="1980040c-fa0f-4ef5-8985-9679e98fa7c4" name="Changes" comment="alfa 1.103">
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/Logo.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/folders.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris11.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_django_apps/docs/ris9.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 7
@@ -31,12 +49,19 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "last_opened_file_path": "D:/Python/pythonProject/Diplom_Django_apps/sample_django_apps/static/media",
+    "settings.editor.selected.configurable": "promo.django"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Python\pythonProject\Diplom_Django_apps\sample_django_apps\static\media" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -53,6 +78,98 @@
       <option name="presentableId" value="Default" />
       <updated>1728315129174</updated>
     </task>
+    <task id="LOCAL-00001" summary="alfa 1.057">
+      <option name="closed" value="true" />
+      <created>1729349961868</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1729349961868</updated>
+    </task>
+    <task id="LOCAL-00002" summary="alfa 1.069">
+      <option name="closed" value="true" />
+      <created>1729533651227</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1729533651227</updated>
+    </task>
+    <task id="LOCAL-00003" summary="alfa 1.072">
+      <option name="closed" value="true" />
+      <created>1729582340347</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729582340347</updated>
+    </task>
+    <task id="LOCAL-00004" summary="alfa 1.072">
+      <option name="closed" value="true" />
+      <created>1729582390251</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1729582390251</updated>
+    </task>
+    <task id="LOCAL-00005" summary="alfa 1.075">
+      <option name="closed" value="true" />
+      <created>1729583344942</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1729583344942</updated>
+    </task>
+    <task id="LOCAL-00006" summary="alfa 1.079">
+      <option name="closed" value="true" />
+      <created>1729594379420</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1729594379420</updated>
+    </task>
+    <task id="LOCAL-00007" summary="alfa 1.079">
+      <option name="closed" value="true" />
+      <created>1729594431677</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1729594431677</updated>
+    </task>
+    <task id="LOCAL-00008" summary="alfa 1.081">
+      <option name="closed" value="true" />
+      <created>1729597274334</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1729597274334</updated>
+    </task>
+    <task id="LOCAL-00009" summary="alfa 1.101">
+      <option name="closed" value="true" />
+      <created>1729792895372</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1729792895372</updated>
+    </task>
+    <task id="LOCAL-00010" summary="alfa 1.103">
+      <option name="closed" value="true" />
+      <created>1729795620195</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729795620195</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="alfa 1.057" />
+    <MESSAGE value="alfa 1.069" />
+    <MESSAGE value="alfa 1.072" />
+    <MESSAGE value="alfa 1.075" />
+    <MESSAGE value="alfa 1.079" />
+    <MESSAGE value="alfa 1.081" />
+    <MESSAGE value="alfa 1.101" />
+    <MESSAGE value="alfa 1.103" />
+    <option name="LAST_COMMIT_MESSAGE" value="alfa 1.103" />
   </component>
 </project>

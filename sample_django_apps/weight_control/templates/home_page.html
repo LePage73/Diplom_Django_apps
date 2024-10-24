@@ -14,7 +14,18 @@
 {% endblock %}
 </h2>
 {% block content %}
-{{ block.super }}
+<div class="container mt-5" main-container>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                        <p>{{ welcome }}&nbsp;<a href="/weight_control/entrance/">войдите</a>&nbsp; или&nbsp; <a href="/weight_control/registration/">зарегистрируйтесь</a> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 </body>

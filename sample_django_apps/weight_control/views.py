@@ -9,8 +9,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse_lazy
 from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Assignment, Preparats_List, Specialty_List
-from .config import MENU, MAIN_TITLE, MENU_DASHBOARD, MENU_ENTRANCE, MENU_REGISTRATION
-import numpy as np
+from .config import MENU, MAIN_TITLE, MENU_DASHBOARD, MENU_ENTRANCE, MENU_REGISTRATION, MENU_MANAGER_REG, WELCOME,  MENU_MANAGER_GUIDE
 import matplotlib.pyplot as plt
 
 # построение графиков
@@ -28,11 +27,11 @@ def plot_weight_graph(pacient_id):
     plt.grid()
     plt.ioff()
     plt.plot(x,y)
-    plt.savefig('./static/media/graph_weight_1.png', transparent=True)
+    plt.savefig(f'./static/media/graph_weight_{pacient_id}.png', transparent=True)
 
 # строим график частоты появления симптомов
-def plot_symptoms_graph(pacient_d):
-    pacient_symp = Pacient_reports.objects.prefetch_related('symptoms_list').filter(pacient_profile_id=pacient_d)
+def plot_symptoms_graph(pacient_id):
+    pacient_symp = Pacient_reports.objects.prefetch_related('symptoms_list').filter(pacient_profile_id=pacient_id)
     symp = [ y.title for x in pacient_symp for y in x.symptoms_list.all()]  # все вхождения симптомов
     x = list(set(symp))  # имена симптомов
     y = [symp.count(z) for z in x]  # подсчитываем каждый симптом сколько раз появился
@@ -43,7 +42,7 @@ def plot_symptoms_graph(pacient_d):
     plt.grid()
     plt.ioff()
     plt.bar(x,y)
-    plt.savefig('./static/media/graph_symptom_1.png', transparent=True)
+    plt.savefig(f'./static/media/graph_symptom_{pacient_id}.png', transparent=True)
     pass
 
 # Create your views here.
@@ -75,7 +74,7 @@ def registration(request):
 
 
 def home_page(request):
-    return render(request, 'home_page.html', MENU | MAIN_TITLE)
+    return render(request, 'home_page.html', WELCOME | MENU | MAIN_TITLE)
 
 
 def user_logout(request):
@@ -90,7 +89,7 @@ class User_logon(LoginView):
     extra_context = MENU_ENTRANCE | MAIN_TITLE
 
     def get_success_url(self):
-        return reverse_lazy('home_page')
+        return reverse_lazy('dashboard')
 
 def calculate_age(birth_date):
     if not birth_date:
@@ -127,6 +126,11 @@ class My_View(TemplateView):
 
     def auth_as_doctor(self):
         if self.user_is_auth() and 'врач' in self.get_user_groups():
+            return True
+        return False
+
+    def auth_as_manager(self):
+        if self.user_is_auth() and 'менеджер' in self.get_user_groups():
             return True
         return False
 
@@ -240,6 +244,9 @@ class Dashboard(My_View):
             self.my_context = self.my_context | self.set_doctor_context()
             return render(self.request, 'dashboard_doctor.html',
                           self.my_context | MENU_DASHBOARD | MAIN_TITLE)
+        elif self.auth_as_manager():
+            return render(self.request, 'dashboard_manager.html',
+                          self.my_context | MENU_DASHBOARD | MAIN_TITLE | MENU_MANAGER_REG)
         return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
 
     def post(self, request):
@@ -258,15 +265,9 @@ class Dashboard(My_View):
             pacient_id = self.request.GET.get('pacient_id')
             assign_form = Assignment_Form(self.request.POST)
             if assign_form.is_valid():
-                print('валидно')
                 assign = assign_form.save(commit=False)
                 assign.pacient_profile = Pacient_Profile.objects.get(id = int(pacient_id))
                 assign.doctor_profile = self.get_profile()
-                print(assign)
-                print(assign.pacient_profile.id)
-                print(assign.doctor_profile.id)
-                print(assign.diets)
-                print(assign.description)
                 assign.save()
                 assign_form.save_m2m()
                 return redirect('/weight_control/dashboard/')

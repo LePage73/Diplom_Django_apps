@@ -1,0 +1,53 @@
+{% extends "main_menu.html" %}
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+{{ block.super }}
+{% endblock %}
+<body>
+{% block header %}
+{{ block.super }}
+{% endblock %}
+<h2>
+{% block menu %}
+{{ block.super }}
+{% endblock %}
+</h2>
+{% block content %}
+<div class="container mt-3 menu-container">
+<!-- меню менеджера -->
+<ul class="nav nav-tabs justify-content-left">
+{% for str_ in menu_manager %}
+    <li class="nav-item">
+        <a class="nav-link {{str_.class}}" href="{{str_.href}}" >{{str_.menu}}</a>
+    </li>
+{% endfor %}
+</ul>
+
+<!-- контент -->
+<div class="container  ">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                test
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+</div>
+<script>
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)})
+</script>
+
+{% endblock %}
+
+</body>
+</html>

@@ -70,9 +70,9 @@
                                   </div>
 
                                   <div class="modal-body">
-                                        <p>Рекомендация:</p><p>{{ assign.diet.description }}</p><hr>
+                                        <p>Рекомендация:</p><p>{{ assign.description }}</p><hr>
                                         <p>Диета:</p>
-                                            <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ assign.diet }}" data-bs-content="{{ assign.description }}">
+                                            <button class="btn btn-secondary" data-bs-toggle="popover" title="{{ assign.diet }}" data-bs-content="{{ assign.diet.description }}">
                                             {{ assign.diet }}
                                             </button>
                                             <hr>

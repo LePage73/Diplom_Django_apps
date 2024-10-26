@@ -100,7 +100,7 @@ class Symptoms_list(models.Model):
 class Pacient_reports(models.Model):
     report_date = models.DateField(null=False, blank=True, default=date.today, unique=False)
     pacient_profile = models.ForeignKey(Pacient_Profile, on_delete=models.CASCADE, unique=False)
-    weight_today = models.DecimalField(max_digits=6, decimal_places=3, unique=False)
+    weight_today = models.DecimalField(max_digits=6, decimal_places=1, unique=False)
     symptoms_list = models.ManyToManyField(Symptoms_list, unique=False)
     description = models.TextField(unique=False, null=True)
 

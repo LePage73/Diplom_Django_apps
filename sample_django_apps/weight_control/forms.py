@@ -75,11 +75,12 @@ class Dashboard_Form(forms.Form):
 class Pacient_Report_Form(ModelForm):
     SYMPTOM_LIST = [(x.id, x.title) for x in Symptoms_list.objects.all()]
     symptoms_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=SYMPTOM_LIST)
+    weight_today = forms.DecimalField(min_value = 25, max_value=500, max_digits=4, decimal_places=1)
 
     class Meta:
         model = Pacient_reports
         exclude = ['pacient_profile']
-        widgets = {'weight_today': NumberInput(attrs={'type': 'number', 'placeholder': 'Ваш вес сегодня, кг', }),
+        widgets = {'weight_today': forms.NumberInput(attrs={'type': 'number', 'placeholder': 'Ваш вес сегодня, кг', }),
                    'description': forms.Textarea(attrs={ 'cols': 28, 'rows': 2, 'placeholder': 'Опишите кратко свое состояние', }),
                    }
 

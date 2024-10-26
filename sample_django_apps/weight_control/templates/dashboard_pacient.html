@@ -38,7 +38,13 @@
                                      <hr>
                                     {{ form.weight_today}}
 
-                                    <button type="submit" class="btn-primary">Отправить</button>
+                                    <button type="submit" class="btn-primary" {{ disabled }}>
+                                        {% if disabled == 'disabled' %}
+                                        Отправлено
+                                        {% else %}
+                                        Отправить
+                                        {% endif %}
+                                    </button>
                                     <!-- <a href="" class="btn">Отмена</a> -->
                                  </div>
                              </div>

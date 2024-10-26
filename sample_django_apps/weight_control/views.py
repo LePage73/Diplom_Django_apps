@@ -247,7 +247,8 @@ class Dashboard(My_View):
         elif self.auth_as_manager():
             return render(self.request, 'dashboard_manager.html',
                           self.my_context | MENU_DASHBOARD | MAIN_TITLE | MENU_MANAGER_REG)
-        return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
+        return redirect('/weight_control/')
+        # return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
 
     def post(self, request):
         if self.auth_as_pacient():
@@ -257,10 +258,13 @@ class Dashboard(My_View):
                 report.pacient_profile = self.get_profile()  #####
                 report.save()  #####
                 pacient_report_form.save_m2m()  #####
-                return redirect('/weight_control/')
+                # тут уведомим об успешной отправке и задисейблим кнопку
+                self.my_context = self.set_pacient_context()
+                self.my_context['disabled'] = 'disabled'
+                return render(self.request, 'dashboard_pacient.html', self.my_context | MENU_DASHBOARD | MAIN_TITLE)
             self.my_context = self.set_pacient_context()
             self.my_context['form'] = pacient_report_form
-            return render(self.request, 'dashboard_pacient.html', self.my_context | MENU | MAIN_TITLE)
+            return render(self.request, 'dashboard_pacient.html', self.my_context | MENU_DASHBOARD | MAIN_TITLE)
         elif self.auth_as_doctor():
             pacient_id = self.request.GET.get('pacient_id')
             assign_form = Assignment_Form(self.request.POST)
@@ -272,11 +276,9 @@ class Dashboard(My_View):
                 assign_form.save_m2m()
                 return redirect('/weight_control/dashboard/')
             self.my_context = self.set_doctor_context()
-            print('не валидно')
-            print(assign_form.errors)
             self.my_context['assign_form'] = assign_form
             return render(self.request, 'dashboard_doctor.html',
                           self.my_context | MENU_DASHBOARD | MAIN_TITLE)
-        return redirect('/weight_control/')
+        return redirect('/weight_control/dashboard/')
 
 

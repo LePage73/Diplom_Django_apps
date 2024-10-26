@@ -17,6 +17,12 @@ import matplotlib.pyplot as plt
 # график изменения веса
 
 def plot_weight_graph(pacient_id):
+    '''
+    строит график изменения веса пациента
+    и сохраняет его в файл
+    :param pacient_id: ссылка на профиль пациента
+    :return: ничего не возвращает
+    '''
     pacient_rep = Pacient_reports.objects.filter(pacient_profile_id=pacient_id).order_by('report_date')
     x = [a.report_date for a in pacient_rep]  # дата отчета
     y = [a.weight_today for a in pacient_rep]  # вес в этом отчете
@@ -31,6 +37,12 @@ def plot_weight_graph(pacient_id):
 
 # строим график частоты появления симптомов
 def plot_symptoms_graph(pacient_id):
+    '''
+    строит график частоты симптомов
+    проявляющихся у пациента
+    :param pacient_id: ссылка на профиль пациента
+    :return: ничего не возвращает
+    '''
     pacient_symp = Pacient_reports.objects.prefetch_related('symptoms_list').filter(pacient_profile_id=pacient_id)
     symp = [ y.title for x in pacient_symp for y in x.symptoms_list.all()]  # все вхождения симптомов
     x = list(set(symp))  # имена симптомов
@@ -47,7 +59,22 @@ def plot_symptoms_graph(pacient_id):
 
 # Create your views here.
 
+def home_page(request):
+    '''
+    Представление домашней страницы
+    :param request: HTTP запрос
+    :return: отправляет HTML домашней страницы
+    '''
+    return render(request, 'home_page.html', WELCOME | MENU | MAIN_TITLE)
+
+
 def registration(request):
+    '''
+    Представление страницы регистрации пациента
+    :param request: HTTP запрос
+    :return: отправляет HTML страницы регистрации,
+    а если пользователь успешно зарегистрировался - редирект в личный кабинет
+    '''
     if request.method == 'POST':
         form_user = User_Creation_Form(request.POST)
         form_pacient = Pacient_Profile_Form(request.POST)
@@ -61,7 +88,7 @@ def registration(request):
             pacient.save()
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('/weight_control/')
+            return redirect('/weight_control/dashboard/')
     else:
         form_user = User_Creation_Form()
         form_pacient = Pacient_Profile_Form()
@@ -73,25 +100,39 @@ def registration(request):
                   | MAIN_TITLE)
 
 
-def home_page(request):
-    return render(request, 'home_page.html', WELCOME | MENU | MAIN_TITLE)
-
 
 def user_logout(request):
+    '''
+    осуществляет выход пользователя из системы
+    :param request: входящий запрос
+    :return: редирект на главную страницу
+    '''
     logout(request)
     return redirect('/weight_control/')
     # return render(request,'home_page.html', MENU | MAIN_TITLE)
 
 
 class User_logon(LoginView):
+    '''
+    Представление страницы входа пользователя
+    '''
     form_class = AuthenticationForm
     template_name = 'logon.html'
     extra_context = MENU_ENTRANCE | MAIN_TITLE
 
     def get_success_url(self):
+        '''
+        успешнфй вход в систему
+        :return: редирект в личный кабинет
+        '''
         return reverse_lazy('dashboard')
 
 def calculate_age(birth_date):
+    '''
+    вычисляет возраст на текущий момент
+    :param birth_date: дата рождения
+    :return: строку возраста в годах или 'не указан', если дата рождения 'пустая'
+    '''
     if not birth_date:
         return 'не указан'
     else:
@@ -102,39 +143,69 @@ def calculate_age(birth_date):
 # расширим класс TemplateView - научим различать пользователей
 
 class My_View(TemplateView):
+    '''
+    дополнение стандартного класса новыми методами, для дальнейшего использования в представлениях
+    '''
     my_context = {}
-
     def user_is_auth(self):
+        '''
+        проверяет вошел ли пользователь в систему
+        :return: Истина если вошел, Ложь если не вошел
+        '''
         if self.request.user.is_authenticated:
             return True
         return False
 
     def get_user(self, ):
+        '''
+        получает объект пользователя из БД
+        :return: возвращает объект пользователя или Пусто если пользователь не вошел в систему
+        '''
         if self.user_is_auth():
             return User.objects.get(username=self.request.user)
         return None  # пользователь не вошел
 
     def get_user_groups(self):
+        '''
+        возвращает список групп в которые входит пользователь
+        :return: список групп
+        '''
         if not self.request.user.groups.values():
             return []  # пользователь вне групп
         return [x['name'] for x in self.request.user.groups.values('name')]  # возвращвем списки имен групп пользователя
 
     def auth_as_pacient(self):
+        '''
+        определяет авторизован ли пользователь как пациент
+        :return: Истина если пациент, Ложь если не пациент
+        '''
         if self.user_is_auth() and len(self.get_user_groups()) == 0:
             return True
         return False
 
     def auth_as_doctor(self):
+        '''
+        определяет авторизован ли пользователь как врач
+        :return: Истина если врач, Ложь если не врач
+        '''
         if self.user_is_auth() and 'врач' in self.get_user_groups():
             return True
         return False
 
     def auth_as_manager(self):
+        '''
+        определяет авторизован ли пользователь как менеджер
+        :return: Истина если менеджер, Ложь если не менеджер
+        '''
         if self.user_is_auth() and 'менеджер' in self.get_user_groups():
             return True
         return False
 
     def get_profile(self, ):
+        '''
+        получает объект профиля пользователя из БД
+        :return: объект профиля пользователя или пусто если профиля нет
+        '''
         if self.auth_as_doctor():
             if Doctor_Profile.objects.filter(user__username=self.request.user).exists():
                 return Doctor_Profile.objects.get(user__username=self.request.user)
@@ -148,6 +219,11 @@ class My_View(TemplateView):
         return None
 
     def get_profile_form(self, requestion=None):
+        '''
+        получает форму профиля пользователя, заполняет её данными из запроса
+        :param requestion: запрос
+        :return: форма профиля пользователя, или Пусто если формы не существует
+        '''
         if self.auth_as_doctor():
             form = Doctor_profile_Form(requestion, instance=self.get_profile())
             return form
@@ -158,7 +234,15 @@ class My_View(TemplateView):
 
 
 class Profile_Edit(My_View):
+    '''
+    представление страницы редактирования/создания профиля
+    '''
     def get(self, request):
+        '''
+        формирует страницу редактирования профиля
+        :param request: входящий запрос
+        :return: страницу редактирования профиля или главную страницу если пользователь не авторизован
+        '''
         if self.auth_as_pacient():
             pacient_form = self.get_profile_form()
             self.my_context['form_pacient'] = pacient_form
@@ -170,15 +254,20 @@ class Profile_Edit(My_View):
         return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
 
     def post(self, request):
+        '''
+        сохраняет измененнй/новый профиль
+        :param request:
+        :return: редирект в личный кабинет
+        '''
         if self.auth_as_pacient():
-            pacient_form = self.get_profile_form(requestion=request.POST)  # при instace=None записывает новый
+            pacient_form = self.get_profile_form(requestion=request.POST)  # при instace=None записывает новый (если профиля еще нет)
             if not pacient_form.is_valid():
                 self.my_context['form_pacient'] = pacient_form
                 return render(self.request, 'user_profile_edit.html', self.my_context | MENU_DASHBOARD | MAIN_TITLE)
             pacient = pacient_form.save(commit=False)
             pacient.user = self.get_user()
             pacient.save()
-            return redirect('/weight_control/')  # пациент профиль поправил успешно
+            return redirect('/weight_control/dashboard/')  # пациент профиль поправил успешно
         elif self.auth_as_doctor():
             doctor_form = self.get_profile_form(requestion=request.POST)
             if not doctor_form.is_valid():
@@ -188,12 +277,19 @@ class Profile_Edit(My_View):
             doctor.user = self.get_user()
             doctor.save()
             doctor_form.save_m2m()
-            return redirect('/weight_control/')  # док профиль поправил успешно
+            return redirect('//weight_control/dashboard/')  # док профиль поправил успешно
         return redirect('/weight_control/')  # если не зашел - регистрируйся
 
 
 class Dashboard(My_View):
+    '''
+    представление личного кабинета пользователя
+    '''
     def set_pacient_context(self):
+        '''
+        создает контекст кабинета пациента
+        :return: контекст кабинета пациента
+        '''
         context = {}
         pacient_report_form = Pacient_Report_Form()
         context['form'] = pacient_report_form
@@ -213,6 +309,10 @@ class Dashboard(My_View):
         return context
 
     def set_doctor_context(self):
+        '''
+        создает контекст кабинета врача
+        :return: контекст кабинета врача
+        '''
         context = {}
         pacient_id = self.request.GET.get('pacient_id')
         if not pacient_id:
@@ -236,6 +336,11 @@ class Dashboard(My_View):
         return context
 
     def get(self, request):
+        '''
+        создает личный кабинет
+        :param request: входящий запрос
+        :return: страница личного кабинета или главная страница, если пользователь не авторизован
+        '''
         if self.auth_as_pacient():
             self.my_context = self.my_context | self.set_pacient_context()
             return render(self.request, 'dashboard_pacient.html',
@@ -251,6 +356,11 @@ class Dashboard(My_View):
         # return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
 
     def post(self, request):
+        '''
+        сохраняет результат работы пользователя в личном кабинете в базу данных
+        :param request: входящий запрос
+        :return: страница личного кабинета
+        '''
         if self.auth_as_pacient():
             pacient_report_form = Pacient_Report_Form(request.POST)
             if pacient_report_form.is_valid():

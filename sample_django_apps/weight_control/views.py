@@ -362,7 +362,7 @@ class Dashboard(My_View):
             return render(self.request, 'dashboard_manager.html',
                           self.my_context | MENU_DASHBOARD | MAIN_TITLE | MENU_MANAGER_REG)
         return redirect('/weight_control/')
-        # return render(self.request, 'home_page.html', MENU | MAIN_TITLE)
+
 
     def post(self, request):
         """

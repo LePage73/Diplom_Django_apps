@@ -22,7 +22,7 @@ def calculate_age(birth_date):
 
 class Specialty_List(models.Model):
     """
-    модель справочника врачебных специальностей
+    модель справочника медицинских специальностей
     """
     title = models.CharField(max_length=50)
     description = models.TextField()

@@ -16,6 +16,7 @@ class Pacient_Profile_Form(ModelForm):
     gender = forms.ChoiceField(choices=CHOICE_GENDER, )
     email = forms.EmailField(initial='vash_email@domen.ru', required=False)
     registration_date = forms.DateField(required=False)
+    start_weight = forms.DecimalField(max_value=400, min_value=25, max_digits=4, decimal_places=1)
 
     class Meta:
         model = Pacient_Profile

@@ -4,13 +4,15 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment, Specialty_List, Preparats_List
+from .models import Pacient_Profile, Doctor_Profile, Pacient_reports, Symptoms_list, Assignment, Specialty_List, \
+    Preparats_List
 from .config import CHOICE_GENDER
 
+
 class Pacient_Profile_Form(ModelForm):
-    '''
+    """
     форма профиля пользователя-пациента
-    '''
+    """
     gender = forms.ChoiceField(choices=CHOICE_GENDER, )
     email = forms.EmailField(initial='vash_email@domen.ru', required=False)
     registration_date = forms.DateField(required=False)
@@ -33,10 +35,12 @@ class Pacient_Profile_Form(ModelForm):
 
                    }
 
+
 class User_Creation_Form(UserCreationForm):
-    '''
+    """
     форма регистрации пользователя
-    '''
+    """
+
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
@@ -45,10 +49,12 @@ class User_Creation_Form(UserCreationForm):
                    'password2': forms.PasswordInput(attrs={}),
                    }
 
+
 class User_logon_Form(AuthenticationForm):
-    '''
+    """
     форма аутентификации пользователя для входа в систему
-    '''
+    """
+
     class Meta:
         model = User
         fields = ['username', 'password']
@@ -56,12 +62,14 @@ class User_logon_Form(AuthenticationForm):
                    'password': forms.PasswordInput(attrs={}),
                    }
 
+
 class Doctor_profile_Form(ModelForm):
-    '''
+    """
     форма профиля пользователя-врача
-    '''
+    """
     DOC_SPEC = [(x.id, x.title) for x in Specialty_List.objects.all()]
     doc_specialty = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=DOC_SPEC)
+
     class Meta:
         model = Doctor_Profile
         exclude = ['user']
@@ -74,35 +82,37 @@ class Doctor_profile_Form(ModelForm):
                                                    'placeholder': 'Адрес: \nМосква, 3-я улица Строителей, д.5, кв. 12', }),
                    'birth_date': NumberInput(attrs={'type': 'date', }),
                    'self_description': forms.Textarea(attrs={'cols': '100%', 'rows': 3,
-                                                   'placeholder': 'Расскажите о себе нашим пациентам', }),
+                                                             'placeholder': 'Расскажите о себе нашим пациентам', }),
                    'gender': forms.RadioSelect(attrs={}, ),
                    'email': forms.TextInput(attrs={'placeholder': 'vash_email@domen.ru', })
                    }
 
 
 class Dashboard_Form(forms.Form):
-
     pass
 
+
 class Pacient_Report_Form(ModelForm):
-    '''
+    """
     форма ежедневного отчета пациента
-    '''
+    """
     SYMPTOM_LIST = [(x.id, x.title) for x in Symptoms_list.objects.all()]
     symptoms_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=SYMPTOM_LIST)
-    weight_today = forms.DecimalField(min_value = 25, max_value=500, max_digits=4, decimal_places=1)
+    weight_today = forms.DecimalField(min_value=25, max_value=500, max_digits=4, decimal_places=1)
 
     class Meta:
         model = Pacient_reports
         exclude = ['pacient_profile']
         widgets = {'weight_today': forms.NumberInput(attrs={'type': 'number', 'placeholder': 'Ваш вес сегодня, кг', }),
-                   'description': forms.Textarea(attrs={ 'cols': 28, 'rows': 2, 'placeholder': 'Опишите кратко свое состояние', }),
+                   'description': forms.Textarea(
+                       attrs={'cols': 28, 'rows': 2, 'placeholder': 'Опишите кратко свое состояние', }),
                    }
 
+
 class Assignment_Form(ModelForm):
-    '''
+    """
     форма назначения пациенту от врача
-    '''
+    """
     PREPARATS_LIST = [(x.id, x.title) for x in Preparats_List.objects.all()]
     preparats_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=PREPARATS_LIST)
 
